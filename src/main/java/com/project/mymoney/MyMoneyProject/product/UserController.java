@@ -3,7 +3,6 @@ package com.project.mymoney.MyMoneyProject.product;
 import com.project.mymoney.MyMoneyProject.model.UserModel;
 import com.project.mymoney.MyMoneyProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,19 +81,4 @@ public class UserController {
                     .body("update balance not successfully.");
         }
     }
-
-//    @PutMapping(value = "update-MinusBalance/{username}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<String> updateMinusBalance(@PathVariable(name = "username") String username , @RequestParam Integer amount) {
-//        int result = userRepository.updateBalanceMinus(username , amount);
-//
-//        if(result != 0) {
-//            return ResponseEntity
-//                    .ok()
-//                    .body("update balance successfully.");
-//        } else {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body("update balance not successfully.");
-//        }
-//    }
 }
