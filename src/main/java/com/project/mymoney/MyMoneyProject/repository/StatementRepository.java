@@ -36,16 +36,19 @@ public class StatementRepository {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public List<IncomeExpenses> getYearandMonth() {
+    public List<IncomeExpenses> getYearandMonth(String username) {
         String sql = "SELECT" +
                 " DATE_FORMAT(DATE, '%Y-%m') AS 'year_month', " +
                 " SUM(CASE WHEN TYPE = 'income' THEN amount ELSE 0 END) AS income, " +
                 " SUM(CASE WHEN TYPE = 'expenses' THEN amount ELSE 0 END) AS expenses " +
                 "FROM STATEMENT " +
+                "WHERE USERNAME = :username " +
                 "GROUP BY DATE_FORMAT(DATE, '%Y-%m') " +
                 "ORDER BY  DATE_FORMAT(DATE, '%Y-%m') DESC;";
 
         Query query = entityManager.createNativeQuery(sql);
+
+        query.setParameter("username" , username);
 
         List<Object[]> resultList = query.getResultList();
         List<IncomeExpenses> incomeExpenses = new ArrayList<>();
@@ -62,15 +65,16 @@ public class StatementRepository {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public ArrayList<StatementModel> getStatementData(String monthString) {
+    public ArrayList<StatementModel> getStatementData(String monthString , String username) {
         String sql = "SELECT * " +
                 "FROM STATEMENT " +
-                "WHERE DATE_FORMAT(DATE, '%Y-%m') = :monthString " +
+                "WHERE DATE_FORMAT(DATE, '%Y-%m') = :monthString AND USERNAME = :username " +
                 "ORDER BY DATE DESC;";
 
         Query query = entityManager.createNativeQuery(sql);
 
         query.setParameter("monthString" , monthString);
+        query.setParameter("username" , username);
 
         ArrayList<Object[]> resultList = (ArrayList<Object[]>) query.getResultList();
 
@@ -92,4 +96,35 @@ public class StatementRepository {
         return statementModels;
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
+    public ArrayList<SummarizeCategory> getSummarizeCategory(String username) {
+        String sql = "SELECT " +
+                "category, " +
+                "type, " +
+                "DATE_FORMAT(date, '%Y-%m') AS yearMonth, " +
+                "SUM(AMOUNT) AS total_amount " +
+                "FROM STATEMENT " +
+                "WHERE USERNAME = :username " +
+                "GROUP BY category, type, yearMonth;";
+        
+        Query query = entityManager.createNativeQuery(sql);
+
+        query.setParameter("username" , username);
+
+        ArrayList<Object[]> resultList = (ArrayList<Object[]>) query.getResultList();
+
+        ArrayList<SummarizeCategory> summarizeCategories = new ArrayList<>();
+
+        resultList.forEach(result -> {
+            SummarizeCategory summarizeCategory = new SummarizeCategory();
+
+            summarizeCategory.setCategory((String) result[0]);
+            summarizeCategory.setType((String) result[1]);
+            summarizeCategory.setDate((String) result[2]);
+            summarizeCategory.setAmount((Double) result[3]);
+
+            summarizeCategories.add(summarizeCategory);
+        });
+        return summarizeCategories;
+    }
 }

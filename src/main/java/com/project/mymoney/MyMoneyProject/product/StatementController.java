@@ -1,18 +1,12 @@
 package com.project.mymoney.MyMoneyProject.product;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.mymoney.MyMoneyProject.model.*;
 import com.project.mymoney.MyMoneyProject.repository.StatementRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,19 +31,33 @@ public class StatementController {
         }
     }
 
-    @GetMapping(value = "statement-getMonth")
-    public ResponseEntity<List<IncomeExpenses>> getYearAndMonth() {
-        List<IncomeExpenses> yearMonths = statementRepository.getYearandMonth();
+    @GetMapping(value = "hello-test")
+    public ResponseEntity<String> test(){
+        return ResponseEntity
+                .ok()
+                .body("OK");
+    }
+
+    @GetMapping(value = "statement-getMonth/{username}")
+    public ResponseEntity<List<IncomeExpenses>> getYearAndMonth(@PathVariable(name = "username") String username) {
+        List<IncomeExpenses> yearMonths = statementRepository.getYearandMonth(username);
         return ResponseEntity
                 .ok()
                 .body(yearMonths);
     }
 
-    @GetMapping(value = "statement-getData/{monthString}")
-    public ResponseEntity<ArrayList<StatementModel>> getStatementData(@PathVariable(name = "monthString") String monthString) {
+    @GetMapping(value = "statement-getData/{username}/{monthString}")
+    public ResponseEntity<ArrayList<StatementModel>> getStatementData(@PathVariable(name = "monthString") String monthString ,
+                                                                      @PathVariable(name = "username") String username) {
         return ResponseEntity
                 .ok()
-                .body(statementRepository.getStatementData(monthString));
+                .body(statementRepository.getStatementData(monthString , username));
     }
 
+    @GetMapping(value = "statement-getSummarize/{username}")
+    public ResponseEntity<ArrayList<SummarizeCategory>> getStatementSummarize(@PathVariable(name = "username") String username) {
+        return ResponseEntity
+                .ok()
+                .body(statementRepository.getSummarizeCategory(username));
+    }
 }
