@@ -1,8 +1,6 @@
 package com.project.mymoney.MyMoneyProject.model;
 
-import java.util.Date;
-
-public class RegularModel {
+public class RegularNextPay {
     private Long id;
     private String username;
     private String name;
@@ -12,6 +10,9 @@ public class RegularModel {
     private String cycle;
     private String type;
     private String currentPay;
+    private String nextPay;
+    private String pay;
+
 
     public Long getId() {
         return id;
@@ -75,6 +76,22 @@ public class RegularModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getNextPay() {
+        return nextPay;
+    }
+
+    public void setNextPay(String nextPay) {
+        this.nextPay = nextPay;
+    }
+
+    public String getPay() {
+        return pay;
+    }
+
+    public void setPay(String pay) {
+        this.pay = pay;
     }
 
     public String getCurrentPay() {
